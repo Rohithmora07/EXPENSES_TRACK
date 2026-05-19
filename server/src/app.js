@@ -18,7 +18,7 @@ export function createApp() {
   app.use(cors({
     origin: [
       'http://localhost:5173',
-      'https://expenses-track.vercel.app', // replace with your actual Vercel URL
+      'https://expenses-track-ebon.vercel.app', // replace with your actual Vercel URL
     ],
     credentials: true,
   }));
