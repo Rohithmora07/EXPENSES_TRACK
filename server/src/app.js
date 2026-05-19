@@ -8,29 +8,27 @@ import { expenseRouter } from "./routes/expenseRoutes.js";
 import { notFound } from "./middleware/notFound.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
-// Resolve directory
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export function createApp() {
   const app = express();
 
-  // Middleware
-  app.use(cors());
+  // CORS
+  app.use(cors({
+    origin: [
+      'http://localhost:5173',
+      'https://expenses-track.vercel.app', // replace with your actual Vercel URL
+    ],
+    credentials: true,
+  }));
 
-  app.use(
-    express.json({
-      limit: "2mb",
-    })
-  );
+  app.use(express.json({ limit: "2mb" }));
 
-  // Static uploads folder
-  app.use(
-    "/uploads",
-    express.static(path.join(__dirname, "../uploads"))
-  );
+  // Static uploads
+  app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
-  // Root route
+  // Root
   app.get("/", (req, res) => {
     res.json({
       success: true,
@@ -39,8 +37,7 @@ export function createApp() {
         health: "GET /api/health",
         listExpenses: "GET /api/expenses",
         getExpense: "GET /api/expenses/:id",
-        uploadExpense:
-          "POST /api/expenses/upload (multipart/form-data -> image)",
+        uploadExpense: "POST /api/expenses/upload (multipart/form-data -> image)",
         updateExpense: "PUT /api/expenses/:id",
         deleteExpense: "DELETE /api/expenses/:id",
       },
@@ -49,13 +46,10 @@ export function createApp() {
 
   // Health check
   app.get("/api/health", (req, res) => {
-    res.json({
-      success: true,
-      service: "expense-tracker-api",
-    });
+    res.json({ success: true, service: "expense-tracker-api" });
   });
 
-  // Expense routes
+  // Routes
   app.use("/api/expenses", expenseRouter);
 
   // Error handlers
